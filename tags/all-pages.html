@@ -1,0 +1,75 @@
+<!-- 
+  TagName: CBY - EnhancedTag - All Pages
+  Tag Type: HTML
+  HTML CONTENT : Script abaixo
+ -->
+
+<!-- 
+    
+    Variables
+    
+    visitorLoginStateValidation: function(){
+        function(){
+            if({{visitorLoginState}} == false){
+                return 0
+            } else {
+                return 1
+            }
+        }
+    }
+    visitorLoginState: visitorLoginState
+    visitorId: visitorId
+    visitorEmail: function(){
+        var visitorArray = {{visitorContactInfo}}
+        return visitorArray[0]
+    }
+    visitorType: visitorType
+    NewsRegistration: function(){
+        if({{visitorType}} == "returning user"){
+            return 0
+        }else{
+            return 1
+        }
+    }
+    pageCategory: pageCategory
+    pageDepartment: pageDepartment
+    categoryName: categoryName
+-->
+
+<!-- 
+    How this works:
+
+    I Hate setTimeout but whe don't have another way to get all this information with a callback
+ -->
+<script>
+        try {
+          setTimeout(function(){
+            dataLayer.push({
+              'info': {
+                "user": { 
+                  'isLoggedIn': {{visitorLoginStateValidation}},        /* 1 = logado e 0 = anonimo */
+                  'clientId': {{visitorId}},           /* chave unica de identificação do cliente */
+                  'clientEmail': {{visitorEmail}},           /* email */
+                  'isNewRegistration': {{NewsRegistration}} /* 1 = new e 0 = old nível sessão */
+                },
+                "page": {
+                  "pagePath": window.location.pathname,           /* ex.: /vestidos */
+                  "pageType": {{pageCategory}},           /* ex.: home|category|campaign|product|search */
+                  "pageCategory": {{pageDepartment}},       /* caso exista categorização da pagina */
+                  "pageSubCategory": {{categoryName}}
+                },  
+               },
+                  "event": "virtualPageview"
+            });
+      
+          },1000);
+        }catch(err) {
+            console.log(err)
+        }
+</script>
+
+<!-- 
+  Trigger / Disparador
+
+  Firing rule: All Pages
+ -->

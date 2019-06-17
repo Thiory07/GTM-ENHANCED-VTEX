@@ -1,0 +1,90 @@
+<!-- 
+  TagName: CBY - EnhancedTag - orderPlaced
+  Tag Type: HTML
+  HTML CONTENT : Script abaixo
+ -->
+<!-- 
+    
+    Variables
+    
+    transactionProducts: transactionProducts
+    transactionId: transactionId
+    transactionTotal: transactionTotal
+    transactionShipping: transactionShipping
+    coupon: coupon
+-->
+
+<!-- 
+    How this works:
+
+    This tag will send all the products to checkout, mount a new orderPlaced Datalayer to send to GA
+ -->
+
+<script>
+    var CheckoutSteps = {
+      init: function(){
+        CheckoutSteps.sendData();
+      },
+      mountProducts: function(){
+        products = []
+        var i = 0
+        {{transactionProducts}}.forEach(function (item) {
+            console.log(item, i)
+             productName = item["name"].replace(item["skuName"], "").trim();
+             products.push({
+                'name': productName,
+                'id': item["id"],
+                'brand': item["brand"],
+                'category': item["category"],
+                'price': item["price"],
+                'variant': item["skuName"],
+                'quantity': item["quantity"]
+              });
+              i = i + 1;
+        });
+        return products;
+      },
+      sendData: function(){
+        products = CheckoutSteps.mountProducts();
+        dataLayer.push({
+          'ecommerce': {
+            'currencyCode': 'BRL',
+            'purchase': {
+              'actionField': {
+                'id': {{transactionId}},            
+                'revenue': {{transactionTotal}},
+                'tax': '0',
+                'shipping': {{transactionShipping}},
+                'coupon': {{coupon}}
+              },
+              'products': products
+            }
+          },
+        'event': 'cby.purchase'
+          
+        });
+      }
+    }
+    
+    try {
+      $(document).ready(function(){
+        CheckoutSteps.init();
+      })
+    
+    }catch(err) {
+        console.log(err)
+    }
+    
+</script>
+
+    
+<!-- 
+  Trigger / Disparador
+
+  Firing rule: orderPlaced
+
+  Trigger Product content:
+    Trigger Name: orderPlaced
+    Trigger type: Custom Event
+    Event Name: orderPlaced
+ -->

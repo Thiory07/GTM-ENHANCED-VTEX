@@ -1,0 +1,87 @@
+<!-- 
+  TagName: CBY - EnhancedTag - Product Add To Cart
+  Tag Type: HTML
+  HTML CONTENT : Script abaixo
+ -->
+<!-- 
+    
+    Variables
+    
+    productId: productId
+    productName: productName
+    productPriceTo: productPriceTo
+    productBrandName: productBrandName
+    productCategoryName: productCategoryName
+-->
+
+<!-- 
+    How this works:
+
+    When click in the add to cart, the product will send to GA
+ -->
+
+
+<script>
+
+        var cbyProductClick = {
+          init: function(){
+            cbyProductClick.clickProduct();
+          },
+        
+          clickProduct: function(){
+            $('.buy-button').livequery('click', function(){
+              
+              var Vid = {{productId}};
+        
+              var Vname = {{productName}};
+              var VpriceTo = {{productPriceTo}};
+              var Vbrand = {{productBrandName}};
+              var Vcategory = {{productCategoryName}};
+              var Vid = {{productId}}; 
+        
+            
+              var quantity = $(".quantity-input input").val();
+        
+              window.dataLayer = window.dataLayer || [];
+              window.dataLayer.push({
+              'event': 'cby.AddToCart',
+              'ecommerce': {
+                'currencyCode': 'BRL',
+                'add': {
+                  'products': [{
+                    'name': Vname,
+                    'id': Vid,
+                    'price': VpriceTo,
+                    'brand': Vbrand,
+                    'category': Vcategory,
+                    'quantity': quantity
+                  }]
+                }
+              },
+            });
+        
+            })
+          }
+        }
+        
+        try {
+          $(document).ready(function(){
+            cbyProductClick.init();
+          })
+        }catch(err) {
+            console.log(err)
+        }
+        
+</script>
+        
+<!-- 
+  Trigger / Disparador
+
+  Firing rule: All Pages
+  Exception rule: Checkout
+
+  Trigger Product content:
+    Trigger Name: productView
+    Trigger type: Custom Event
+    Event Name: productView
+ -->

@@ -1,0 +1,72 @@
+<!-- 
+  TagName: CBY - EnhancedTag - Remove Cart
+  Tag Type: HTML
+  HTML CONTENT : Script abaixo
+ -->
+
+<script>
+
+var cbycbyProductClickRemove = {
+  init: function(){
+    cbyProductClickRemove.clickRemove();
+  },
+
+  clickRemove: function(){
+    // choose your element with remove link
+    $('body').on('click','.remove-link', function(){
+      // setup remove link
+      var elementBlock =  $(this).parents("li.row")
+      // get your product sku
+      var Vid = elementBlock.attr("sku");
+      // get your product skuName
+      var Vname = elementBlock.find('._qc-product-0').text();
+      //  get your product quantity removed
+      var quantity = elementBlock.find('._qty').val();
+
+      // get datalyer
+      window.dataLayer = window.dataLayer || [];
+      // add info to datalayyer
+      //  event is the event name
+      // Ecommerce is the advanced tag where you will add the product information that you are deletting
+      window.dataLayer.push({
+        
+      'event': 'cby.removeFromCart',
+        
+      'ecommerce': {
+        'currencyCode': 'BRL',
+        'remove': {
+          'products': [{
+            'name': Vname,
+            'id': Vid,
+            'quantity': quantity
+          }]
+        }
+      }
+    });
+
+    })
+  }
+}
+
+try {
+  $(document).ready(function(){
+    cbyProductClickRemove.init();
+  })
+}catch(err) {
+    console.log(err)
+}
+
+</script>
+
+<!-- 
+  Trigger / Disparador
+
+  Firing rule: All Pages
+  Exception rule: Checkout
+
+  Trigger checkout content:
+
+    Trigger type: Page view
+    This trigger fires on: Some Pages
+    Fires this trigger when: Page Path contains /checkout
+ -->

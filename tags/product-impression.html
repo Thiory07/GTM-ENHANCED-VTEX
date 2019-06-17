@@ -1,0 +1,119 @@
+<!-- 
+  TagName: CBY - EnhancedTag - Product Impression
+  Tag Type: HTML
+  HTML CONTENT : Script abaixo
+ -->
+
+
+<!-- 
+    How this works:
+
+    Each search page works from one way you just have to configure the variables
+
+    methods:
+
+    Valid Search:
+
+    if you use the ajax search, this functions is only validating if search object exist to start get the data
+
+    Ajax shelf:
+
+    Will read each product at shelf and send to vtex
+    You have to change the class in the function because each site have your own classes
+
+    One important question:
+
+    Impressions will be by product, not by sku, this because the user have to select the sku
+ -->
+
+<script>
+        var cbyDataImpression = {
+          init: function(){
+            cbyDataImpression.validSearch();
+          },
+        
+          validSearch: function(){
+            if ( $('body.search').length >= 0 ){
+              cbyDataImpression.ajaxShelf();
+            }
+          },
+        
+          ajaxShelf: function(){
+            impressions = [];
+            var enumerating= 1;
+            $('body.search .shelf-search ul li:not(.helperComplement, .slick-slide), body.departamento .vitrine ul li:not(.helperComplement, .slick-slide)').livequery(function(){
+                gtmProduct  = $(this);
+                id = gtmProduct.find(".product-id, .idProduto").text().trim();
+                url = gtmProduct.find(".product-more").attr("href");
+                EscapedName = gtmProduct.find(".product-name a, .product-title a").text().trim();
+                BestPrice = gtmProduct.find(".newPrice .bestPrice, .newPrice .por").text();
+                CategoryName = gtmProduct.find(".product-category").text().trim();
+                // CategoryName = gtmProduct.find(".CategoryName")
+                Brand = gtmProduct.find(".brand").text().trim();
+                if (typeof(EscapedName) != "undefined" && EscapedName != ""){
+                  var impression = {
+                    'name': EscapedName,
+                    'id': id,
+                    'price': BestPrice,
+                    'brand': Brand,
+                    'category': CategoryName,
+                    'position': enumerating,
+                    'list': window.location.pathname
+                  };
+                  enumerating= enumerating+1;
+                  impressions.push(impression)
+                }
+                
+        
+            })
+            
+            cbyDataImpression.dataLayerAdd(impressions)
+          },
+        
+          dataLayerAdd: function(){
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+             'event': 'cby.impression',
+             'ecommerce': {
+               'currencyCode': 'BRL',
+               'impressions': impressions,
+              }
+        
+            });
+          }
+        
+          
+        }
+        
+          try {
+              $(document).ready(function(){
+                cbyDataImpression.init();  
+              })
+            
+            
+          }catch(err) {
+              console.log(err)
+          }
+</script>
+
+<!-- 
+  Trigger / Disparador
+
+  Firing rule: Category View
+  Exception rule: Login
+
+  Trigger Category content:
+    Trigger Name: categoryView
+    Trigger type: Custom Event
+    Event Name: categoryView
+
+  Trigger Department content:
+    Trigger Name: departmentView
+    Trigger type: Custom Event
+    Event Name: departmentView
+
+  Trigger OtherView content:
+    Trigger Name: otherView
+    Trigger type: Custom Event
+    Event Name: otherView
+ -->

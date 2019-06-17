@@ -1,0 +1,76 @@
+<!-- 
+  TagName: CBY - EnhancedTag - Product View
+  Tag Type: HTML
+  HTML CONTENT : Script abaixo
+ -->
+<!-- 
+    
+    Variables
+    
+    productId: productId
+    productName: productName
+    productPriceTo: productPriceTo
+    productBrandName: productBrandName
+    productCategoryName: productCategoryName
+-->
+
+<!-- 
+    How this works:
+
+    When product page is loaded will sent the product to GA (at this case because the SKU need to be selected)
+ -->
+
+<script>
+
+        var cbyProductView = {
+          init: function(){
+            cbyProductView.loadProductV();
+          },
+        
+          loadProductV: function(){
+            var Vid = {{productId}}; 
+              var Vname = {{productName}};
+              var VpriceTo = {{productPriceTo}};
+            var Vbrand = {{productBrandName}};
+            var Vcategory = {{productCategoryName}};
+            
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              'ecommerce': {
+                'detail': {
+                  'products': [{
+                    'name': Vname,
+                    'id': Vid,
+                    'price': VpriceTo,
+                    'brand': Vbrand,
+                    'category': Vcategory
+                   }]
+                 }
+               },
+               'event': 'cby.ProductDetail'
+            });
+          }
+        }
+        
+        try {
+          $(document).ready(function(){
+            cbyProductView.init();  
+          })  
+        }catch(err) {
+            console.log(err)
+        }
+        
+</script>
+        
+
+<!-- 
+  Trigger / Disparador
+
+  Firing rule: All Pages
+  Exception rule: Checkout
+
+  Trigger Product content:
+    Trigger Name: productView
+    Trigger type: Custom Event
+    Event Name: productView
+ -->
